@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "operador")
+@Table(name = "TBL_OPERADOR")
 public class Operador implements Serializable,UserDetails {
 
     private static final long serialVersionUID = 1L;

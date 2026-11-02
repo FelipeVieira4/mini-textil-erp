@@ -10,6 +10,16 @@
     ]
   },
   {
+    "modulo": "Empresa",
+    "programas": [
+      {
+        "id": "CADASTRO_EMPRESA",
+        "titulo": "Cadastro de Empresa",
+        "viewClassName": "com.minitextil.erp.empresa.view.CadastroEmpresa"
+      }
+    ]
+  },
+  {
     "modulo": "Operadores",
     "programas": [
       {
