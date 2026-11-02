@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "empresa")
+@Table(name = "TBL_EMPRESA")
 public class Empresa implements Serializable {
 
 	private static final long serialVersionUID = 1L;
