@@ -24,6 +24,6 @@ server.port=8080
 
 # uma vez inicializado, remover essas linhas
 app.admin-user.createNewUser=false
-app.admin-user.name=Usuário Adiministração
-app.admin-user.loginName=Usuário
-app.admin-user.password=Senha
+app.admin-user.name=User ADM
+app.admin-user.loginName=user_adm
+app.admin-user.password=admPassword
