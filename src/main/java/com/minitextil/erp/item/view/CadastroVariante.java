@@ -40,6 +40,8 @@ public class CadastroVariante extends ProgramErp {
         this.setWidthFull();
         this.setAlignItems(Alignment.CENTER);
 
+        setCabecalho("Cadastro de Variantes", "Dados gerais de variantes");
+
         binder.forField(descricao)
                 .asRequired("Informe a descrição da Variante")
                 .bind(VarianteItem::getDescricao, VarianteItem::setDescricao);
@@ -93,8 +95,7 @@ public class CadastroVariante extends ProgramErp {
         formLayout.setRowSpacing("25px");
 
         formLayout.add(idCampo, new Div(), descricao, ativo, espacoCampoCor, new Div(), btSalvar);
-
-        add(formLayout);
+        add(criarCard(formLayout));
     }
 
     private void MostrarDadosVariante(Long idBusca) {

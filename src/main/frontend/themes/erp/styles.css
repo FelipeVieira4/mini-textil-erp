@@ -1,2 +1,179 @@
 @import url('./main-layout.css');
 @import url('./views/data-grid-view.css');
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html {
+    /* Cor principal */
+    --lumo-primary-color: #4f46e5;
+    --lumo-primary-color-50pct: rgba(79, 70, 229, 0.5);
+    --lumo-primary-color-10pct: rgba(79, 70, 229, 0.1);
+    --lumo-primary-text-color: #4f46e5;
+
+    /* Base e fundo */
+    --lumo-base-color: #ffffff;
+    --app-bg: #f4f6fb;
+    --app-border: #e5e7ef;
+
+    /* Forma e fonte */
+    --lumo-font-family: 'Inter', system-ui, sans-serif;
+    --lumo-border-radius-m: 0.6rem;
+    --lumo-border-radius-l: 0.9rem;
+    --lumo-body-text-color: #1f2937;
+    --lumo-secondary-text-color: #6b7280;
+
+    /* Largura do drawer */
+    --vaadin-app-layout-drawer-width: 300px;
+}
+
+/* ===== Layout geral ===== */
+vaadin-app-layout {
+    background: var(--app-bg);
+}
+
+vaadin-app-layout::part(navbar) {
+    background: #fff;
+    border-bottom: 1px solid var(--app-border);
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
+}
+
+/* ===== Drawer escuro com cantos arredondados à direita ===== */
+vaadin-app-layout::part(drawer) {
+    background: #111827;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+vaadin-app-layout::part(drawer) > * {
+    box-sizing: border-box;
+}
+
+.app-title {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: var(--lumo-space-l) var(--lumo-space-m);
+    text-align: center;
+    color: #fff;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Menu com respiro maior à direita, longe do canto arredondado */
+vaadin-side-nav {
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--lumo-space-m) var(--lumo-space-m) var(--lumo-space-m) var(--lumo-space-s);
+}
+
+vaadin-side-nav-item {
+    --vaadin-side-nav-item-color: #cbd5e1;
+    color: #cbd5e1;
+    font-weight: 500;
+    border-radius: var(--lumo-border-radius-m);
+    cursor: pointer;
+}
+
+vaadin-side-nav-item::part(content) {
+    white-space: nowrap;
+}
+
+vaadin-side-nav-item:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+vaadin-side-nav-item vaadin-icon {
+    color: #94a3b8;
+}
+
+/* Item de menu do programa da aba ativa */
+vaadin-side-nav-item.item-ativo {
+    background: rgba(79, 70, 229, 0.25);
+    color: #fff;
+}
+
+/* ===== Rodapé com botão sair ===== */
+.drawer-footer {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-s);
+    padding: var(--lumo-space-m);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-user {
+    color: #94a3b8;
+    font-size: var(--lumo-font-size-s);
+    text-align: center;
+}
+
+.btn-sair {
+    color: #fca5a5;
+    font-weight: 600;
+    justify-content: center;
+}
+
+.btn-sair:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fecaca;
+}
+
+/* ===== Abas de instâncias ===== */
+.instance-tabs vaadin-tab {
+    border-radius: var(--lumo-border-radius-m) var(--lumo-border-radius-m) 0 0;
+    font-weight: 500;
+}
+
+.instance-tabs vaadin-tab[selected] {
+    background: var(--lumo-primary-color-10pct);
+}
+
+/* ===== Cabeçalho e cartão ===== */
+.page-header,
+.card {
+    width: 100%;
+    max-width: 720px;
+    box-sizing: border-box;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-l);
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: var(--lumo-border-radius-l);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    padding: var(--lumo-space-l);
+}
+
+.page-title {
+    margin: 0 0 var(--lumo-space-xs) 0;
+    font-size: var(--lumo-font-size-xl);
+    font-weight: 700;
+}
+
+.page-subtitle {
+    color: var(--lumo-secondary-text-color);
+    margin: 0 0 var(--lumo-space-l) 0;
+    font-size: var(--lumo-font-size-s);
+}
+
+/* ===== Campos e botões ===== */
+vaadin-text-field,
+vaadin-combo-box,
+vaadin-integer-field,
+vaadin-number-field {
+    --vaadin-input-field-background: #f9fafb;
+    --vaadin-input-field-border-width: 1px;
+    --vaadin-input-field-border-color: var(--app-border);
+}
+
+vaadin-button[theme~='primary'] {
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3);
+}

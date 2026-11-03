@@ -1,6 +1,7 @@
 package com.minitextil.erp.operador.view;
 
 import com.minitextil.erp.components.core.program.Program;
+import com.minitextil.erp.components.core.program.ProgramErp;
 import com.minitextil.erp.empresa.model.Empresa;
 import com.minitextil.erp.empresa.repository.EmpresaRepository;
 import com.minitextil.erp.operador.model.Operador;
@@ -30,7 +31,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import java.util.List;
 import java.util.Optional;
 
-public class CadastroOperador extends VerticalLayout implements Program {
+public class CadastroOperador extends ProgramErp {
     private static final long serialVersionUID = 1L;
     
 	private final Binder<Operador> binder = new BeanValidationBinder<>(Operador.class);
@@ -57,9 +58,10 @@ public class CadastroOperador extends VerticalLayout implements Program {
         
         
         this.setWidthFull();
-        this.setAlignItems(Alignment.CENTER); 
-        
-        
+        this.setAlignItems(Alignment.CENTER);
+
+        setCabecalho("Cadastro de Operador", "Dados gerais de operadores");
+
         HorizontalLayout idCampo = new HorizontalLayout(id,btObter);
         idCampo.setDefaultVerticalComponentAlignment(HorizontalLayout.Alignment.BASELINE);
         idCampo.setWidthFull();
@@ -114,8 +116,8 @@ public class CadastroOperador extends VerticalLayout implements Program {
         formLayout.setRowSpacing("25px");
         
         formLayout.add(idCampo, new Div(), nome, loginName, email, new Div(), empresa, new Div(), senha, confirmarSenha, ativo, new Div(), btSalvar);
-        
-        add(formLayout);
+
+        add(criarCard(formLayout));
     }
     
 	private void ObterDadosOperador(Long idBusca) {

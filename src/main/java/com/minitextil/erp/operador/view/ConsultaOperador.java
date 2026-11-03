@@ -1,16 +1,15 @@
 package com.minitextil.erp.operador.view;
 
-import com.minitextil.erp.components.core.program.Program;
+import com.minitextil.erp.components.core.program.ProgramErp;
 import com.minitextil.erp.components.grid.GridComponent;
 import com.minitextil.erp.components.grid.TipoColunas;
 import com.minitextil.erp.operador.model.Operador;
 import com.minitextil.erp.operador.repository.OperadorRepository;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.List;
 
-public class ConsultaOperador extends VerticalLayout implements Program {
+public class ConsultaOperador extends ProgramErp {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,6 +22,8 @@ public class ConsultaOperador extends VerticalLayout implements Program {
         setSizeFull();
         setPadding(true);
         setSpacing(true);
+
+        setCabecalho("Consulta de Operadores", "Consulta de operadores");
 
         configurarGrid();
         add(grid);
