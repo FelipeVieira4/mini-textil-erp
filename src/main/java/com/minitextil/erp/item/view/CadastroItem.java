@@ -44,8 +44,9 @@ public class CadastroItem extends ProgramErp {
         this.repository = repository;
         
         this.setWidthFull();
-        this.setAlignItems(Alignment.CENTER); 
-        
+        this.setAlignItems(Alignment.CENTER);
+
+        setCabecalho("Cadastro de Item", "Dados gerais do material");
         
         HorizontalLayout idCampo = new HorizontalLayout(id,btObter);
         idCampo.setDefaultVerticalComponentAlignment(HorizontalLayout.Alignment.BASELINE);
@@ -118,14 +119,29 @@ public class CadastroItem extends ProgramErp {
         
         Button btSalvar = new Button("Salvar", _-> salvar());
         btSalvar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        
-        FormLayout formLayout = new FormLayout();
-        formLayout.setWidth("50vw");
-        formLayout.setRowSpacing("25px");
-        
-        formLayout.add(idCampo, new Div(), descricao, ativo, unidade, new Div(), botoesOpcoes,new Div(), btSalvar);
 
-        add(formLayout);
+        FormLayout formLayout = new FormLayout();
+        formLayout.setWidthFull();
+        formLayout.setRowSpacing("var(--lumo-space-l)");
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 1),
+                new FormLayout.ResponsiveStep("500px", 2));
+
+        idCampo.setWidth("auto");
+        formLayout.add(idCampo, new Div());
+        formLayout.add(descricao, ativo);
+        formLayout.add(unidade, new Div());
+
+        HorizontalLayout acoes = new HorizontalLayout(btEstoqueItem, btSalvar);
+        acoes.setWidthFull();
+        acoes.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        // Estoque vira botão secundário, Salvar fica como ação principal
+        btEstoqueItem.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btEstoqueItem.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        btEstoqueItem.setIcon(VaadinIcon.STOCK.create());
+
+        add(criarCard(formLayout, acoes));
     }
     
 	private void MostrarDadosItem(Long idBusca) {
