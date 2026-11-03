@@ -3,6 +3,7 @@ package com.minitextil.erp.empresa.view;
 import java.util.Optional;
 
 import com.minitextil.erp.components.core.program.Program;
+import com.minitextil.erp.components.core.program.ProgramErp;
 import com.minitextil.erp.empresa.model.Empresa;
 import com.minitextil.erp.empresa.repository.EmpresaRepository;
 import com.minitextil.erp.empresa.service.EmpresaService;
@@ -24,7 +25,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 
-public class CadastroEmpresa extends VerticalLayout implements Program {
+public class CadastroEmpresa extends ProgramErp {
 	   private static final long serialVersionUID = 1L;
 	    
 		private final Binder<Empresa> binder = new BeanValidationBinder<>(Empresa.class);
@@ -44,9 +45,11 @@ public class CadastroEmpresa extends VerticalLayout implements Program {
 	        this.service = service;
 	        
 	        this.setWidthFull();
-	        this.setAlignItems(Alignment.CENTER); 
+	        this.setAlignItems(Alignment.CENTER);
 
-	        HorizontalLayout idCampo = new HorizontalLayout(id,btObter);
+			setCabecalho("Cadastro de Empresa", "Dados gerais de empresa");
+
+			HorizontalLayout idCampo = new HorizontalLayout(id,btObter);
 	        idCampo.setDefaultVerticalComponentAlignment(HorizontalLayout.Alignment.BASELINE);
 	        idCampo.setWidthFull();
 	        
@@ -93,8 +96,7 @@ public class CadastroEmpresa extends VerticalLayout implements Program {
 	        formLayout.setRowSpacing("25px");
 	        
 	        formLayout.add(idCampo, new Div(), descricao, cnpjEmpresa, situacao, new Div(), btSalvar);
-	        
-	        add(formLayout);
+			add(criarCard(formLayout));
 	    }
 
 		private void MostrarDadosEmpresa(Long idBusca) {

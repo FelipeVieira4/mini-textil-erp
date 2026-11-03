@@ -1,4 +1,4 @@
-app.version=0.3-dev
+app.version=0.4-dev
 
 vaadin.launch-browser=true
 

@@ -14,7 +14,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @StyleSheet(Lumo.STYLESHEET)
 @StyleSheet("styles.css")
-@Theme(value = "erp")
+@Theme("erp")
 @EnableConfigurationProperties(OperadorAdminProperties.class)
 public class ErpApplication implements AppShellConfigurator {
 

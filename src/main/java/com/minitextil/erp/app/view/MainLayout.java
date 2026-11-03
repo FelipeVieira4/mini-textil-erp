@@ -1,12 +1,15 @@
 package com.minitextil.erp.app.view;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.minitextil.erp.components.core.program.InstanceProgram;
+import com.minitextil.erp.components.core.program.ModuloDef;
 import com.minitextil.erp.components.core.program.ProgramParams;
-import com.minitextil.erp.components.core.program.*;
+import com.minitextil.erp.components.core.program.ProgramRegistry;
+import com.minitextil.erp.components.core.program.ProgramaDef;
 import com.minitextil.erp.empresa.model.Empresa;
 import com.minitextil.erp.empresa.repository.EmpresaRepository;
 import com.minitextil.erp.operador.model.UsuarioSessao;
@@ -27,7 +30,8 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 
 import jakarta.annotation.security.PermitAll;
 
@@ -36,19 +40,26 @@ import jakarta.annotation.security.PermitAll;
 public class MainLayout extends AppLayout {
 
     private static final long serialVersionUID = 1L;
+    private static final String CLASSE_ITEM_ATIVO = "item-ativo";
 
     private final Tabs instanceTabs = new Tabs();
     private final Div instanceContentArea = new Div();
     private final Map<Tab, InstanceProgram> instances = new LinkedHashMap<>();
 
+    // Para destacar no menu o programa da aba selecionada
+    private final Map<Tab, String> programaPorAba = new HashMap<>();
+    private final Map<String, SideNavItem> itensMenu = new HashMap<>();
+
     private final EmpresaRepository empresaRepository;
     private final UsuarioSessao usuarioSessao;
     private final ProgramRegistry programRegistry;
+    private final AuthenticationContext authenticationContext;
 
-    public MainLayout(EmpresaRepository empresaRepository, UsuarioSessao usuarioSessao, ProgramRegistry programRegistry) {
+    public MainLayout(EmpresaRepository empresaRepository, UsuarioSessao usuarioSessao, ProgramRegistry programRegistry, AuthenticationContext authenticationContext) {
         this.empresaRepository = empresaRepository;
         this.usuarioSessao = usuarioSessao;
         this.programRegistry = programRegistry;
+        this.authenticationContext = authenticationContext;
 
         setPrimarySection(Section.DRAWER);
         addHeaderContent();
@@ -65,6 +76,7 @@ public class MainLayout extends AppLayout {
                     showInstance(ip);
                 }
             }
+            atualizarMenuAtivo(selectedTab);
         });
 
         // Abre a tela inicial padrão ao carregar o ERP
@@ -74,6 +86,8 @@ public class MainLayout extends AppLayout {
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
+
+        instanceTabs.addClassName("instance-tabs");
 
         HorizontalLayout headerLayout = new HorizontalLayout(toggle, instanceTabs);
         headerLayout.setWidthFull();
@@ -104,16 +118,36 @@ public class MainLayout extends AppLayout {
 
     private void addDrawerContent() {
         H3 appName = new H3("MiniTextil ERP");
-        appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD, LumoUtility.FontSize.MEDIUM, LumoUtility.Padding.MEDIUM);
-        appName.setWidthFull();
-        appName.getStyle().set("text-align", "center");
+        appName.addClassName("app-title");
 
-        addToDrawer(appName, createNavigation());
+        Scroller scroller = new Scroller(createNavigation());
+        scroller.setWidthFull();
+
+        addToDrawer(appName, scroller, createFooter());
+    }
+
+    private Div createFooter() {
+        Div footer = new Div();
+        footer.addClassName("drawer-footer");
+
+        Span usuario = new Span();
+        usuario.addClassName("drawer-user");
+        if (usuarioSessao.getOperadorLogado() != null) {
+            usuario.setText(usuarioSessao.getOperadorLogado().getUsername());
+        }
+
+        Button btSair = new Button("Sair", VaadinIcon.SIGN_OUT.create(),
+                _ -> authenticationContext.logout());
+        btSair.addClassName("btn-sair");
+        btSair.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        btSair.setWidthFull();
+
+        footer.add(usuario, btSair);
+        return footer;
     }
 
     private SideNav createNavigation() {
         SideNav navSideBar = new SideNav();
-        navSideBar.setWidthFull();
 
         for (ModuloDef modulo : programRegistry.getModulos()) {
             List<ProgramaDef> visiveis = modulo.programas().stream()
@@ -128,6 +162,7 @@ public class MainLayout extends AppLayout {
                 visiveis.forEach(p -> navSideBar.addItem(criarItem(p)));
             } else {
                 SideNavItem moduloItem = new SideNavItem(modulo.modulo());
+                moduloItem.setPrefixComponent(VaadinIcon.FOLDER_OPEN_O.create());
                 visiveis.forEach(p -> moduloItem.addItem(criarItem(p)));
                 navSideBar.addItem(moduloItem);
             }
@@ -138,9 +173,11 @@ public class MainLayout extends AppLayout {
 
     private SideNavItem criarItem(ProgramaDef programa) {
         SideNavItem item = new SideNavItem(programa.titulo());
+        item.setPrefixComponent(VaadinIcon.FILE_TEXT_O.create());
         item.getElement().addEventListener("click", _ ->
                 openNewInstance(programa.id(), ProgramParams.empty())
         );
+        itensMenu.put(programa.id(), item);
         return item;
     }
 
@@ -168,10 +205,10 @@ public class MainLayout extends AppLayout {
         btnFechar.getElement().addEventListener("click", _ -> closeInstance(tab))
                 .addEventData("event.stopPropagation()");
 
-        // Instancia a abas empilhadas usando a nova assinatura do construtor
         InstanceProgram instanceProgram = new InstanceProgram(programRegistry, programaId, params, tab);
 
         instances.put(tab, instanceProgram);
+        programaPorAba.put(tab, programaId);
         instanceTabs.add(tab);
         instanceTabs.setSelectedTab(tab);
         showInstance(instanceProgram);
@@ -182,6 +219,8 @@ public class MainLayout extends AppLayout {
         if (removed == null) {
             return;
         }
+        programaPorAba.remove(tab);
+
         int index = instanceTabs.indexOf(tab);
         instanceTabs.remove(tab);
 
@@ -191,11 +230,26 @@ public class MainLayout extends AppLayout {
             instanceTabs.setSelectedTab(nextTab);
         } else {
             instanceContentArea.removeAll();
+            atualizarMenuAtivo(null);
         }
     }
 
     private void showInstance(InstanceProgram instanceProgram) {
         instanceContentArea.removeAll();
         instanceContentArea.add(instanceProgram);
+    }
+
+    /** Destaca no menu o programa da aba selecionada. */
+    private void atualizarMenuAtivo(Tab abaSelecionada) {
+        itensMenu.values().forEach(i -> i.removeClassName(CLASSE_ITEM_ATIVO));
+
+        if (abaSelecionada == null) {
+            return;
+        }
+        String programaId = programaPorAba.get(abaSelecionada);
+        SideNavItem item = programaId != null ? itensMenu.get(programaId) : null;
+        if (item != null) {
+            item.addClassName(CLASSE_ITEM_ATIVO);
+        }
     }
 }

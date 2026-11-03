@@ -1,9 +1,7 @@
 FROM maven:3.9-eclipse-temurin-25-alpine
 WORKDIR /app
 
-# Realizar um chore semanal para verificar a necessidade de atualizar esses pacotes
-
-RUN apk add --no-cache curl tar && \
+RUN apk add --no-cache curl tar nodejs npm && \
     curl -Lo /tmp/jbr.tar.gz \
       https://cache-redirector.jetbrains.com/intellij-jbr/jbr-25.0.4-linux-musl-x64-b508.27.tar.gz && \
     mkdir -p /opt/jbr && \

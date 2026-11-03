@@ -16,6 +16,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -58,13 +59,16 @@ public class CadastroItemSku extends ProgramErp {
         Button btSalvar = new Button("Salvar", _ -> salvar());
         btSalvar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
+
+        setCabecalho("Cadastro de Item SKU", "Dados gerais de item SKU");
+
         FormLayout formLayout = new FormLayout();
         formLayout.setWidth("50vw");
         formLayout.setRowSpacing("25px");
 
         formLayout.add(idItemPai, idVariante, descricaoItemVariante, new Div(), btSalvar);
 
-        add(formLayout);
+        add(criarCard(formLayout));
     }
 
     private void tentarCarregar() {
