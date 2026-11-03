@@ -22,6 +22,8 @@ public class ConsultaItem extends ProgramErp {
 	        setPadding(true);
 	        setSpacing(true);
 
+			setCabecalho("Consulta de Itens", "Consulta geral de itens");
+
 	        configurarGrid();
 	        add(grid);
 
