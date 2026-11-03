@@ -47,7 +47,7 @@ public class CadastroEmpresa extends ProgramErp {
 	        this.setWidthFull();
 	        this.setAlignItems(Alignment.CENTER);
 
-			setCabecalho("Cadastro de Variantes", "Dados gerais de variantes");
+			setCabecalho("Cadastro de Empresa", "Dados gerais de empresa");
 
 			HorizontalLayout idCampo = new HorizontalLayout(id,btObter);
 	        idCampo.setDefaultVerticalComponentAlignment(HorizontalLayout.Alignment.BASELINE);
