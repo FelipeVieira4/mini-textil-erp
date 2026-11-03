@@ -21,6 +21,9 @@ html {
     --lumo-border-radius-l: 0.9rem;
     --lumo-body-text-color: #1f2937;
     --lumo-secondary-text-color: #6b7280;
+
+    /* Largura do drawer */
+    --vaadin-app-layout-drawer-width: 300px;
 }
 
 /* ===== Layout geral ===== */
@@ -34,22 +37,35 @@ vaadin-app-layout::part(navbar) {
     box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
 }
 
+/* ===== Drawer escuro com cantos arredondados à direita ===== */
 vaadin-app-layout::part(drawer) {
     background: #111827;
     border: none;
+    border-radius: 0 20px 20px 0;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* ===== Drawer escuro ===== */
+vaadin-app-layout::part(drawer) > * {
+    box-sizing: border-box;
+}
+
 .app-title {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: var(--lumo-space-l) var(--lumo-space-m);
+    text-align: center;
     color: #fff;
     letter-spacing: 0.5px;
-    margin: 0;
-    padding: var(--lumo-space-l);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Menu com respiro maior à direita, longe do canto arredondado */
 vaadin-side-nav {
-    padding: var(--lumo-space-s);
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--lumo-space-m) var(--lumo-space-m) var(--lumo-space-m) var(--lumo-space-s);
 }
 
 vaadin-side-nav-item {
@@ -60,6 +76,10 @@ vaadin-side-nav-item {
     cursor: pointer;
 }
 
+vaadin-side-nav-item::part(content) {
+    white-space: nowrap;
+}
+
 vaadin-side-nav-item:hover {
     color: #fff;
     background: rgba(255, 255, 255, 0.07);
@@ -67,6 +87,39 @@ vaadin-side-nav-item:hover {
 
 vaadin-side-nav-item vaadin-icon {
     color: #94a3b8;
+}
+
+/* Item de menu do programa da aba ativa */
+vaadin-side-nav-item.item-ativo {
+    background: rgba(79, 70, 229, 0.25);
+    color: #fff;
+}
+
+/* ===== Rodapé com botão sair ===== */
+.drawer-footer {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-s);
+    padding: var(--lumo-space-m);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-user {
+    color: #94a3b8;
+    font-size: var(--lumo-font-size-s);
+    text-align: center;
+}
+
+.btn-sair {
+    color: #fca5a5;
+    font-weight: 600;
+    justify-content: center;
+}
+
+.btn-sair:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fecaca;
 }
 
 /* ===== Abas de instâncias ===== */
@@ -79,14 +132,23 @@ vaadin-side-nav-item vaadin-icon {
     background: var(--lumo-primary-color-10pct);
 }
 
-/* ===== Cartão de formulário ===== */
+/* ===== Cabeçalho e cartão ===== */
+.page-header,
 .card {
+    width: 100%;
+    max-width: 720px;
+    box-sizing: border-box;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-l);
     background: #fff;
     border: 1px solid var(--app-border);
     border-radius: var(--lumo-border-radius-l);
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
     padding: var(--lumo-space-l);
-    max-width: 720px;
 }
 
 .page-title {
@@ -114,23 +176,4 @@ vaadin-number-field {
 vaadin-button[theme~='primary'] {
     font-weight: 600;
     box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3);
-}
-
-.page-header,
-.card {
-    width: 100%;
-    max-width: 720px;
-    box-sizing: border-box;
-}
-
-.card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--lumo-space-l);
-}
-
-/* Item de menu do programa da aba ativa */
-vaadin-side-nav-item.item-ativo {
-    background: rgba(79, 70, 229, 0.25);
-    color: #fff;
 }

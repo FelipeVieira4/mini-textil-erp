@@ -30,6 +30,8 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 
 import jakarta.annotation.security.PermitAll;
 
@@ -51,11 +53,13 @@ public class MainLayout extends AppLayout {
     private final EmpresaRepository empresaRepository;
     private final UsuarioSessao usuarioSessao;
     private final ProgramRegistry programRegistry;
+    private final AuthenticationContext authenticationContext;
 
-    public MainLayout(EmpresaRepository empresaRepository, UsuarioSessao usuarioSessao, ProgramRegistry programRegistry) {
+    public MainLayout(EmpresaRepository empresaRepository, UsuarioSessao usuarioSessao, ProgramRegistry programRegistry, AuthenticationContext authenticationContext) {
         this.empresaRepository = empresaRepository;
         this.usuarioSessao = usuarioSessao;
         this.programRegistry = programRegistry;
+        this.authenticationContext = authenticationContext;
 
         setPrimarySection(Section.DRAWER);
         addHeaderContent();
@@ -115,15 +119,35 @@ public class MainLayout extends AppLayout {
     private void addDrawerContent() {
         H3 appName = new H3("MiniTextil ERP");
         appName.addClassName("app-title");
-        appName.setWidthFull();
-        appName.getStyle().set("text-align", "center");
 
-        addToDrawer(appName, createNavigation());
+        Scroller scroller = new Scroller(createNavigation());
+        scroller.setWidthFull();
+
+        addToDrawer(appName, scroller, createFooter());
+    }
+
+    private Div createFooter() {
+        Div footer = new Div();
+        footer.addClassName("drawer-footer");
+
+        Span usuario = new Span();
+        usuario.addClassName("drawer-user");
+        if (usuarioSessao.getOperadorLogado() != null) {
+            usuario.setText(usuarioSessao.getOperadorLogado().getUsername());
+        }
+
+        Button btSair = new Button("Sair", VaadinIcon.SIGN_OUT.create(),
+                _ -> authenticationContext.logout());
+        btSair.addClassName("btn-sair");
+        btSair.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        btSair.setWidthFull();
+
+        footer.add(usuario, btSair);
+        return footer;
     }
 
     private SideNav createNavigation() {
         SideNav navSideBar = new SideNav();
-        navSideBar.setWidthFull();
 
         for (ModuloDef modulo : programRegistry.getModulos()) {
             List<ProgramaDef> visiveis = modulo.programas().stream()

@@ -151,7 +151,7 @@ public class Operador implements Serializable,UserDetails {
 
     @Override
     public String getUsername() {
-        return this.loginName;
+        return this.nome;
     }
 
     @Override
