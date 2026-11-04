@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -11,6 +13,8 @@ import {
 } from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { useAuth } from '../auth/AuthContext';
+import { ApiError } from '../api/http';
 
 // Coloque a foto em: public/login-bg.jpg
 const BACKGROUND_IMAGE = '/login-bg.jpg';
@@ -34,11 +38,34 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const { login, autenticado, carregando } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [erro, setErro] = useState('');
+  const [enviando, setEnviando] = useState(false);
+
+  const destino = (location.state as { from?: { pathname: string } } | null)?.from?.pathname ?? '/';
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Sem integração por enquanto.
-    console.log('login', { username, password });
+    setErro('');
+    setEnviando(true);
+    try {
+      await login(username, password);
+      navigate(destino, { replace: true });
+    } catch (err) {
+      setErro(
+        err instanceof ApiError && err.status === 401
+          ? 'Usuário ou senha inválidos'
+          : 'Não foi possível conectar ao servidor',
+      );
+    } finally {
+      setEnviando(false);
+    }
   };
+
+  // já logado (token válido guardado): não mostra o login
+  if (!carregando && autenticado) return <Navigate to="/" replace />;
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.paper' }}>
@@ -53,6 +80,7 @@ export default function LoginPage() {
           px: { xs: 3, md: 0 },
           alignItems: { xs: 'center', md: 'flex-start' },
           pl: { md: '132px' },
+          pt: { md: 20 },
         }}
       >
         <Box
@@ -64,10 +92,11 @@ export default function LoginPage() {
             Log in
           </Typography>
 
-          <FormControl required fullWidth>
+          <FormControl fullWidth>
             <RequiredLabel htmlFor="username">Username</RequiredLabel>
             <OutlinedInput
               id="username"
+              required
               size="small"
               autoComplete="username"
               autoFocus
@@ -77,10 +106,11 @@ export default function LoginPage() {
             />
           </FormControl>
 
-          <FormControl required fullWidth>
+          <FormControl fullWidth>
             <RequiredLabel htmlFor="password">Password</RequiredLabel>
             <OutlinedInput
               id="password"
+              required
               size="small"
               type={mostrarSenha ? 'text' : 'password'}
               autoComplete="current-password"
@@ -103,14 +133,17 @@ export default function LoginPage() {
             />
           </FormControl>
 
+          {erro && <Alert severity="error">{erro}</Alert>}
+
           <Button
             type="submit"
             variant="contained"
             fullWidth
             disableElevation
+            disabled={enviando}
             sx={{ mt: 1, py: 1, textTransform: 'none', fontWeight: 600 }}
           >
-            Log in
+            {enviando ? 'Entrando...' : 'Log in'}
           </Button>
         </Box>
       </Box>

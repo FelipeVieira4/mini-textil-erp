@@ -31,6 +31,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import java.util.List;
 import java.util.Optional;
 
+
+@Deprecated
 public class CadastroOperador extends ProgramErp {
     private static final long serialVersionUID = 1L;
     

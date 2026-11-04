@@ -10,6 +10,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 
 import com.minitextil.erp.operador.model.Operador;
 
+@Deprecated
 public class LookupOperador {
 	
     public void VerTodosOperador(OperadorRepository operadorRepository, Consumer<Operador> selecionarListener) {

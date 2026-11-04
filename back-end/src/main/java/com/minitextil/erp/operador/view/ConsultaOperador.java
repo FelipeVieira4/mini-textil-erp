@@ -9,6 +9,7 @@ import com.vaadin.flow.component.Component;
 
 import java.util.List;
 
+@Deprecated
 public class ConsultaOperador extends ProgramErp {
 
     private static final long serialVersionUID = 1L;

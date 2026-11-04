@@ -22,6 +22,8 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 import { menuItems, type NavItem } from './menuItems';
 
 const DRAWER_WIDTH = 300;
@@ -46,8 +48,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
     Operadores: true,
     Itens: true,
   });
-  const [selecionado, setSelecionado] = useState('/');
-  const [empresa, setEmpresa] = useState('');
+  const { operador, logout, empresaAtivaId, setEmpresaAtiva } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const selecionado = pathname;
+
+  // Enquanto não existe endpoint de empresas, o seletor usa a lista fictícia acima.
+  const empresaValue = empresasMock.some((e) => e.id === empresaAtivaId) ? String(empresaAtivaId) : '';
 
   const alternarGrupo = (label: string) =>
     setGruposAbertos((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -92,7 +99,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <ListItemButton
         key={item.label}
         selected={selecionado === item.path}
-        onClick={() => setSelecionado(item.path ?? '')}
+        onClick={() => item.path && navigate(item.path)}
         sx={itemSx(selecionado === item.path, nivel)}
       >
         <ListItemIcon sx={{ color: s.muted, minWidth: 36 }}>
@@ -139,12 +146,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
           <Box sx={{ borderTop: `1px solid ${s.border}`, py: 2.5, textAlign: 'center' }}>
             <Typography variant="body2" sx={{ color: s.muted }}>
-              User ADM
+              {operador?.nome ?? ''}
             </Typography>
             <Button
               startIcon={<LogoutIcon />}
               sx={{ mt: 1.5, color: s.danger, fontWeight: 600, textTransform: 'none' }}
-              onClick={() => console.log('sair')}
+              onClick={logout}
             >
               Sair
             </Button>
@@ -175,8 +182,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Select
               labelId="empresa-label"
               label="Empresa"
-              value={empresa}
-              onChange={(e: SelectChangeEvent) => setEmpresa(e.target.value)}
+              value={empresaValue}
+              onChange={(e: SelectChangeEvent) => setEmpresaAtiva(Number(e.target.value))}
             >
               {empresasMock.map((e) => (
                 <MenuItem key={e.id} value={String(e.id)}>
