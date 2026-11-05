@@ -1,4 +1,4 @@
-# MiniTêxtil - ERP
+# MiniTêxtil - Gestor de Malharia
 
 Para rodar em desenvolvimento:
 docker compose -f docker-compose.dev.yml watch
